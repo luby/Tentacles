@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_tentacles" default="compile.module.tentacles">
+  <dirname property="module.tentacles.basedir" file="${ant.file.module_tentacles}"/>
+  
+  <property name="module.jdk.home.tentacles" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.tentacles" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.tentacles" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.tentacles" value="${compiler.args}"/>
+  
+  <property name="tentacles.output.dir" value="${module.tentacles.basedir}/out/production/Tentacles"/>
+  <property name="tentacles.testoutput.dir" value="${module.tentacles.basedir}/out/test/Tentacles"/>
+  
+  <path id="tentacles.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="tentacles.module.production.classpath">
+    <path refid="${module.jdk.classpath.tentacles}"/>
+  </path>
+  
+  <path id="tentacles.runtime.production.module.classpath">
+    <pathelement location="${tentacles.output.dir}"/>
+  </path>
+  
+  <path id="tentacles.module.classpath">
+    <path refid="${module.jdk.classpath.tentacles}"/>
+    <pathelement location="${tentacles.output.dir}"/>
+  </path>
+  
+  <path id="tentacles.runtime.module.classpath">
+    <pathelement location="${tentacles.testoutput.dir}"/>
+    <pathelement location="${tentacles.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.tentacles">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.tentacles">
+    <patternset refid="excluded.from.module.tentacles"/>
+  </patternset>
+  
+  <path id="tentacles.module.sourcepath">
+    <dirset dir="${module.tentacles.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.tentacles" depends="compile.module.tentacles.production,compile.module.tentacles.tests" description="Compile module Tentacles"/>
+  
+  <target name="compile.module.tentacles.production" depends="register.custom.compilers" description="Compile module Tentacles; production classes">
+    <mkdir dir="${tentacles.output.dir}"/>
+    <javac2 destdir="${tentacles.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.tentacles}/javac">
+      <compilerarg line="${compiler.args.tentacles}"/>
+      <bootclasspath refid="tentacles.module.bootclasspath"/>
+      <classpath refid="tentacles.module.production.classpath"/>
+      <src refid="tentacles.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.tentacles"/>
+    </javac2>
+    
+    <copy todir="${tentacles.output.dir}">
+      <fileset dir="${module.tentacles.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.tentacles.tests" depends="register.custom.compilers,compile.module.tentacles.production" description="compile module Tentacles; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.tentacles" description="cleanup module">
+    <delete dir="${tentacles.output.dir}"/>
+    <delete dir="${tentacles.testoutput.dir}"/>
+  </target>
+</project>
