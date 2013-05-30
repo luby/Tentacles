@@ -14,21 +14,29 @@ import java.awt.event.*;
 public class Graphical {
   public static void main( String[] args ) {
     JFrame frame = new JFrame("Shady as fuck");
-    frame.getContentPane().add( new Viz());
+    frame.getContentPane().add( new PersonViz(new Person("Lucy Cunningham", 30, 15)));
     frame.setSize(300,300);
     frame.setVisible(true);
   }
 }
 
-class Viz extends JComponent   {
+class PersonViz extends JComponent   {
+
+  private Person person;
+
+  public PersonViz(Person p) {
+    this.person = p;
+  }
   public void paintComponent (Graphics g) {
-    Person luby = new Person("Lucy Cunningham", 30, 15);
+    float p_ratio = (float) person.getCapacityRatio();
+    String p_name = person.getName();
     g.setColor(Color.BLACK);
-    g.drawString(Double.toString(luby.getCapacityRatio()), 70,50);
-    g.setColor(Color.getHSBColor(0.35f, 0.5f, 0.9f));
+    g.drawString(Double.toString(p_ratio), 70,50);
+    g.setColor(Color.getHSBColor(0.35f, p_ratio, 0.9f));
     g.fillOval(30,30,30,30) ;
     g.setColor(Color.BLACK);
-    g.drawString(luby.getName(), 30,30);
+    g.drawString(p_name, 30,30);
+
   }
 
 }
